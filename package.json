@@ -1,0 +1,25 @@
+{
+  "name": "tm-mods",
+  "version": "1.0.0",
+  "description": "Attempting to make custom corps for Terraforming Mars",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "rm -rf build/ && npx tsc && node build/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dwilliams27/tm-mods.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dwilliams27/tm-mods/issues"
+  },
+  "homepage": "https://github.com/dwilliams27/tm-mods#readme",
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "typescript": "^5.0.4"
+  }
+}
