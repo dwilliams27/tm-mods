@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "Attempting to make custom corps for Terraforming Mars",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "rm -rf build/ && npx tsc && node build/index.js"
+    "start": "rm -rf build/ && rm -rf unpacked/ && npx tsc && node --es-module-specifier-resolution=node ./build/index.js"
   },
   "repository": {
     "type": "git",
@@ -21,5 +22,9 @@
   "devDependencies": {
     "@types/node": "^18.15.11",
     "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "globby": "^13.1.4",
+    "source-map-support": "^0.5.21"
   }
 }

@@ -1,13 +1,16 @@
-import { ObjectState, Save } from "../models";
+import { ObjectState, Save, UP_DIR } from "../models";
 import * as fs from 'fs';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
-export const UP_DIR = __dirname + '\\..\\unpacked\\';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export class Unpacker {
   private save: Save;
 
   constructor(filePath: string) {
-    const data = fs.readFileSync(__dirname + '\\..\\..\\saves\\2104525488.json');
+    const data = fs.readFileSync(__dirname + '/../../saves/2104525488.json');
     this.save = JSON.parse(data.toString());
     fs.mkdirSync(UP_DIR);
     this.findAndUnpackBaseCorpDeck();
@@ -23,11 +26,12 @@ export class Unpacker {
 
   unpackDeckToFolder(objectState: ObjectState, prefix?: string) {
     // Use nickname as folder name, spaces to _
-    const folderName = (prefix ? prefix : '') + objectState.Nickname.replace(' ', '_');
+    const safeNickname = objectState.Nickname.replace(' ', '_');
+    const folderName = (prefix ? prefix : '') + safeNickname;
     const destinationDir = UP_DIR + folderName;
     fs.mkdirSync(destinationDir);
     for(let obj of objectState.ContainedObjects) {
-      const cardFolder = destinationDir + '\\' + obj.GUID + '\\';
+      const cardFolder = destinationDir + '/' + obj.GUID + '/';
       fs.mkdirSync(cardFolder);
       
       let content: ObjectState = obj;
@@ -47,10 +51,15 @@ export class Unpacker {
         console.error(e);
       }
     }
+
+    const deckMetadata: Partial<ObjectState> = objectState;
+    delete deckMetadata.ContainedObjects;
+    this.writeJsonFile(destinationDir + '/' + safeNickname + '.json', deckMetadata);
   }
 
-  unpackObjectState(objectState: ObjectState) {
-    
+  saveObjectWithoutContained(objectState: ObjectState, fileName: string) {
+    const obj: Omit<ObjectState, "ContainedObjects"> = objectState;
+    this.writeJsonFile(fileName, obj);
   }
 
   writeJsonFile(filePath: string, content: any) {

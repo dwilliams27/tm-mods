@@ -1,3 +1,9 @@
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 export interface Save {
   SaveName: string,
   EpochTime: string,
@@ -120,3 +126,5 @@ export interface Grid {
   ySize: number,
   PosOffset: any
 }
+
+export const UP_DIR = __dirname + '\\..\\unpacked\\';
