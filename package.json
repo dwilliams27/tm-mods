@@ -6,7 +6,10 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "rm -rf build/ && rm -rf unpacked/ && npx tsc && node --es-module-specifier-resolution=node ./build/index.js"
+    "unpack": "rm -rf build/ unpacked/ repacked/ && npm run full",
+    "full": "npm run build && npm run start",
+    "build": "npx tsc",
+    "start": "node --es-module-specifier-resolution=node ./build/index.js"
   },
   "repository": {
     "type": "git",
@@ -24,6 +27,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "chalk": "^5.2.0",
     "globby": "^13.1.4",
     "source-map-support": "^0.5.21"
   }

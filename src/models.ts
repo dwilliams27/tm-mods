@@ -128,3 +128,5 @@ export interface Grid {
 }
 
 export const UP_DIR = __dirname + '\\..\\unpacked\\';
+
+export const RP_DIR = __dirname + '\\..\\repacked\\';

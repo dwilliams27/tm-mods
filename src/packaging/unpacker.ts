@@ -1,19 +1,13 @@
 import { ObjectState, Save, UP_DIR } from "../models";
 import * as fs from 'fs';
-import { fileURLToPath } from 'url';
-import path from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { getSafeName, safeMakeDir, writeJsonFile } from "./ioTools";
 
 export class Unpacker {
   private save: Save;
 
-  constructor(filePath: string) {
-    const data = fs.readFileSync(__dirname + '/../../saves/2104525488.json');
-    this.save = JSON.parse(data.toString());
-    fs.mkdirSync(UP_DIR);
-    this.findAndUnpackBaseCorpDeck();
+  constructor(save: Save) {
+    this.save = save;
+    safeMakeDir(UP_DIR);
   }
 
   findAndUnpackBaseCorpDeck() {
@@ -26,27 +20,30 @@ export class Unpacker {
 
   unpackDeckToFolder(objectState: ObjectState, prefix?: string) {
     // Use nickname as folder name, spaces to _
-    const safeNickname = objectState.Nickname.replace(' ', '_');
+    const safeNickname = getSafeName(objectState);
     const folderName = (prefix ? prefix : '') + safeNickname;
     const destinationDir = UP_DIR + folderName;
-    fs.mkdirSync(destinationDir);
+    
+    safeMakeDir(destinationDir);
     for(let obj of objectState.ContainedObjects) {
-      const cardFolder = destinationDir + '/' + obj.GUID + '/';
-      fs.mkdirSync(cardFolder);
-      
       let content: ObjectState = obj;
+      const cardFolder = destinationDir + '/' + obj.GUID + '/';
+      const safeCorpName = getSafeName(content);
+
+      safeMakeDir(cardFolder);
+      
       if(content.LuaScript !== '') {
         try {
-          fs.writeFileSync(cardFolder + 'card_script.lua', this.prepLuaTextForWrite(content.LuaScript));
+          fs.writeFileSync(cardFolder + safeCorpName + '.lua', this.prepLuaTextForWrite(content.LuaScript));
         } catch (e) {
           console.error(e);
         }
         
-        content.LuaScript = './card_script.lua';
+        content.LuaScript = `./${safeCorpName}.lua`;
       }
 
       try {
-        this.writeJsonFile(cardFolder + content.Nickname.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.json', content);
+        writeJsonFile(cardFolder + safeCorpName + '.json', content);
       } catch (e) {
         console.error(e);
       }
@@ -54,17 +51,12 @@ export class Unpacker {
 
     const deckMetadata: Partial<ObjectState> = objectState;
     delete deckMetadata.ContainedObjects;
-    this.writeJsonFile(destinationDir + '/' + safeNickname + '.json', deckMetadata);
+    writeJsonFile(destinationDir + '/' + safeNickname + '.json', deckMetadata);
   }
 
   saveObjectWithoutContained(objectState: ObjectState, fileName: string) {
     const obj: Omit<ObjectState, "ContainedObjects"> = objectState;
-    this.writeJsonFile(fileName, obj);
-  }
-
-  writeJsonFile(filePath: string, content: any) {
-    const data = JSON.stringify(content);
-    fs.writeFileSync(filePath, data);
+    writeJsonFile(fileName, obj);
   }
 
   prepLuaTextForWrite(luaText: string) {
