@@ -1,13 +1,13 @@
 {
   "name": "tm-mods",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Attempting to make custom corps for Terraforming Mars",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "unpack": "rm -rf build/ unpacked/ repacked/ && npm run full",
-    "full": "npm run build && npm run start",
+    "unpack": "rm -rf build/ unpacked/ && npm run build && node --es-module-specifier-resolution=node ./build/index.js -unpack",
+    "pack": "rm -rf build/ repacked/ && npm run build && node --es-module-specifier-resolution=node ./build/index.js -pack",
     "build": "npx tsc",
     "start": "node --es-module-specifier-resolution=node ./build/index.js"
   },
@@ -28,7 +28,6 @@
   },
   "dependencies": {
     "chalk": "^5.2.0",
-    "globby": "^13.1.4",
     "source-map-support": "^0.5.21"
   }
 }

@@ -58,3 +58,22 @@ export function safeMakeDir(dirPath: string) {
     console.error(e);
   }
 }
+
+// Note nickname not unique!
+export function findObjectStateByNickname(save: Save, nickname: string) {
+  for(let objectState of save.ObjectStates) {
+    if(objectState.Nickname === nickname) {
+      return objectState;
+    }
+  }
+}
+
+// Note nickname not unique!
+export function setObjectStateByNickname(save: Save, nickname: string, objectState: ObjectState) {
+  for(let index in save.ObjectStates) {
+    if(save.ObjectStates[index].Nickname === nickname) {
+      save.ObjectStates[index] = objectState;
+      return;
+    }
+  }
+}

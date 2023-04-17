@@ -1,6 +1,6 @@
 import { ObjectState, Save, UP_DIR } from "../models";
 import * as fs from 'fs';
-import { getSafeName, safeMakeDir, writeJsonFile } from "./ioTools";
+import { findObjectStateByNickname, getSafeName, safeMakeDir, writeJsonFile } from "./ioTools";
 
 export class Unpacker {
   private save: Save;
@@ -11,11 +11,10 @@ export class Unpacker {
   }
 
   findAndUnpackBaseCorpDeck() {
-    for(let objectState of this.save.ObjectStates) {
-      if(objectState.Nickname === 'Corporations') {
-        this.unpackDeckToFolder(objectState);
-      }
-    }
+    // Little dangerous
+    const baseCorpDeck = findObjectStateByNickname(this.save, 'Corporations') as ObjectState;
+    
+    this.unpackDeckToFolder(baseCorpDeck);
   }
 
   unpackDeckToFolder(objectState: ObjectState, prefix?: string) {

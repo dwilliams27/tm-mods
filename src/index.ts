@@ -8,8 +8,11 @@ import { readInSaveFile } from "./packaging/ioTools";
 const save = readInSaveFile();
 
 if(save !== null) {
-  const unpacker = new Unpacker(save);
-  unpacker.findAndUnpackBaseCorpDeck();
-  const repacker = new Repacker(save);
-  repacker.repackCorporationDeck();
+  if(process.argv[2] === '-pack') {
+    const repacker = new Repacker(save);
+    repacker.repackCorporationDeck();
+  } else if(process.argv[2] === '-unpack') {
+    const unpacker = new Unpacker(save);
+    unpacker.findAndUnpackBaseCorpDeck();
+  }
 }
