@@ -23,7 +23,10 @@
   },
   "homepage": "https://github.com/dwilliams27/tm-mods#readme",
   "devDependencies": {
+    "@prettier/plugin-lua": "^0.0.2",
     "@types/node": "^18.15.11",
+    "@types/prettier": "^2.7.3",
+    "prettier": "^2.8.8",
     "typescript": "^5.0.4"
   },
   "dependencies": {

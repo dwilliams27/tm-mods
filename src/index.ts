@@ -10,9 +10,10 @@ const save = readInSaveFile();
 if(save !== null) {
   if(process.argv[2] === '-pack') {
     const repacker = new Repacker(save);
-    repacker.repackCorporationDeck();
+    repacker.repack();
   } else if(process.argv[2] === '-unpack') {
     const unpacker = new Unpacker(save);
     unpacker.findAndUnpackBaseCorpDeck();
+    unpacker.unpackGlobalLuaScript();
   }
 }

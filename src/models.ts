@@ -59,6 +59,7 @@ export interface ObjectState {
   GridProjection: boolean,
   HideWhenFaceDown: boolean,
   Hands: boolean,
+  CardID: string,
   SidewaysCard: boolean,
   DeckIDs: number[],
   CustomDeck: { [key: string]: { 
@@ -130,3 +131,5 @@ export interface Grid {
 export const UP_DIR = __dirname + '\\..\\unpacked\\';
 
 export const RP_DIR = __dirname + '\\..\\repacked\\';
+
+export const PATCH_DIR = __dirname + '\\..\\patch\\';

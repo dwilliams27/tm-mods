@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "fs";
 import { ObjectState, Save } from "../models";
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -29,6 +29,14 @@ export function readFileAsString(folderPath: string) {
   return data.toString();
 }
 
+export function writeFile(filePath: string, content: any) {
+  try {
+    writeFileSync(filePath, content);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 export function writeJsonFile(filePath: string, content: any) {
   const data = JSON.stringify(content);
   writeFileSync(filePath, data);
@@ -36,6 +44,10 @@ export function writeJsonFile(filePath: string, content: any) {
 
 export function getSafeName(objectState: ObjectState) {
   return objectState.Nickname.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+}
+
+export function getSafeNameS(str: string) {
+  return str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 }
 
 export function readInSaveFile() {
@@ -51,9 +63,19 @@ export function readInSaveFile() {
   return save;
 }
 
+export function readInFolder(dir: string): string[] {
+  let res: string[] = [];
+  getFileList(dir).map((file) => {
+    res.push(readFileAsString(dir + '/' + file))
+  });
+  return res;
+}
+
 export function safeMakeDir(dirPath: string) {
   try {
-    mkdirSync(dirPath);
+    if(!existsSync(dirPath)) {
+      mkdirSync(dirPath);
+    }
   } catch(e) {
     console.error(e);
   }
