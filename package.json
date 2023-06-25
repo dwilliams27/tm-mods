@@ -24,6 +24,7 @@
   "homepage": "https://github.com/dwilliams27/tm-mods#readme",
   "devDependencies": {
     "@prettier/plugin-lua": "^0.0.2",
+    "@types/fs-extra": "^11.0.1",
     "@types/node": "^18.15.11",
     "@types/prettier": "^2.7.3",
     "prettier": "^2.8.8",
@@ -31,6 +32,7 @@
   },
   "dependencies": {
     "chalk": "^5.2.0",
+    "fs-extra": "^11.1.1",
     "source-map-support": "^0.5.21"
   }
 }

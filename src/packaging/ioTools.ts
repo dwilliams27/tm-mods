@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { ObjectState, Save } from "../models";
 import { fileURLToPath } from 'url';
 import path from 'path';
+import fse from "fs-extra";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -79,6 +80,16 @@ export function safeMakeDir(dirPath: string) {
   } catch(e) {
     console.error(e);
   }
+}
+
+export function copyFolder(source: string, destination: string) {
+  try {
+    fse.copySync(source, destination, { overwrite: false })
+    return true;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }  
 }
 
 // Note nickname not unique!

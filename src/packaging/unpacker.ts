@@ -87,7 +87,7 @@ export class Unpacker {
     try {
       return prettier.format(content, { semi: false, parser: "lua" })
     } catch(e) {
-      console.error(e);
+      console.error("Lua auto-formtatting failed!");
       return content;
     }
   }
