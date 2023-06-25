@@ -128,8 +128,8 @@ export interface Grid {
   PosOffset: any
 }
 
-export const UP_DIR = __dirname + '\\..\\unpacked\\';
+export const UP_DIR = __dirname + '/../unpacked/';
 
-export const RP_DIR = __dirname + '\\..\\repacked\\';
+export const RP_DIR = __dirname + '/../repacked/';
 
-export const PATCH_DIR = __dirname + '\\..\\patch\\';
+export const PATCH_DIR = __dirname + '/../patch/';
