@@ -128,6 +128,12 @@ export interface Grid {
   PosOffset: any
 }
 
+export interface ModConfig {
+  name: string,
+  description?: string,
+  filesToPatch: string[]
+}
+
 export const UP_DIR = __dirname + '/../unpacked/';
 
 export const RP_DIR = __dirname + '/../repacked/';

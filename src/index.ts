@@ -12,25 +12,19 @@ if(save !== null) {
   const args = process.argv.slice(2);
   for(const arg of args) {
     switch(arg) {
-      case '-pack': {
-        console.log(chalk.cyan('Packing unpacked/ folder...'));
+      case '--pack': {
+        console.log(chalk.cyan('Packing patch/ and unpacked/ folders...'));
         const repacker = new Repacker(save);
         repacker.repack();
         break;
       }
-      case '-packFromPatch': {
-        console.log(chalk.cyan('Packing patch/ folder...'));
-        const repacker = new Repacker(save);
-        repacker.repack(true);
-        break;
-      }
-      case '-unpack': {
+      case '--unpack': {
         const unpacker = new Unpacker(save);
         unpacker.findAndUnpackBaseCorpDeck();
         unpacker.unpackGlobalLuaScript();
         break;
       }
-      case '-createPatch': {
+      case '--createPatch': {
         copyFolder(UP_DIR, PATCH_DIR);
         console.log(chalk.green('Success! Copied unpacked/ folder to patch/ folder, without overwriting any existing files in patch/'));
         break;

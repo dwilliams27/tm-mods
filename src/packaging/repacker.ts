@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import { mkdirSync } from 'fs'
-import { ObjectState, PATCH_DIR, RP_DIR, Save, UP_DIR } from '../models';
+import { ModConfig, ObjectState, PATCH_DIR, RP_DIR, Save, UP_DIR } from '../models';
 import { GlobalLuaModel } from '../models/globalLuaModel';
-import { getFileList, getFolderList, getSafeName, readFileAsString, readInFolder, readJSONFile, safeMakeDir, setObjectStateByNickname, writeJsonFile } from './ioTools';
+import { getFileList, getFolderList, getSafeName, readFileAsString, readInFiles, readInFolder, readJSONFile, safeMakeDir, setObjectStateByNickname, writeJsonFile } from './ioTools';
 
 export class Repacker {
   private save: Save;
@@ -12,26 +12,40 @@ export class Repacker {
     safeMakeDir(RP_DIR);
   }
 
-  // TODO: Patch not working for global lua
-  repack(repackFromPatch: boolean = false) {
+  // TODO: Patch + Unpacked merge not implemented for Corps; Just pulling from unpacked now
+  repack() {
+    /* 
+      --------------------
+      - Mod Config File --
+      --------------------
+    */
+    const filesToPatch = this.parseModFile();
+
     /* 
       --------------------
       --- Corporations ---
       --------------------
     */
-    this.repackCorporations(repackFromPatch);
+    this.repackCorporations(false);
 
     /* 
       --------------------
       ---- Global Lua ----
       --------------------
     */
-    this.repackGlobalLua(false);
+    this.repackGlobalLua(filesToPatch);
 
     // Repack save.json
     console.log(chalk.cyan('Packing save file ') + chalk.yellow(RP_DIR + 'save_output.json'));
     writeJsonFile(RP_DIR + 'save_output.json', this.save);
     console.log(chalk.green('Repacking complete! Replace save in Tabletop Simulator/Mods/Workshop'));
+  }
+
+  parseModFile() {
+    const modConfig: ModConfig = readJSONFile(`${PATCH_DIR}mod_config.json`);
+    this.save.SaveName = modConfig.name;
+
+    return modConfig.filesToPatch;
   }
 
   repackCorporations(repackFromPatch: boolean) {
@@ -75,16 +89,30 @@ export class Repacker {
     setObjectStateByNickname(this.save, 'Corporations', corpDeckObjectState);
   }
 
-  repackGlobalLua(repackFromPatch: boolean) {
-    safeMakeDir(RP_DIR + '/global');
+  repackGlobalLua(filesToPatch: string[]) {
+    safeMakeDir(RP_DIR + 'global');
     let res = '';
-    const sourceFolder = repackFromPatch ? PATCH_DIR : UP_DIR;
-    const folderPath = sourceFolder + '/global';
+    const unpackedFolderPath = UP_DIR + 'global';
 
-    for(let k in GlobalLuaModel) {
-      const dir = `${folderPath}/${(GlobalLuaModel as any)[k]}`;
-      const files = readInFolder(dir);
-      res += '\n\n\n' + files.join('\n\n\n');
+    const patchFiles = readInFiles(filesToPatch.map(((file) => PATCH_DIR + file)));
+    const fileSet: { [key: string]: string} = {};
+    for(const patchFile of patchFiles) {
+      console.log(patchFile[0].substring(patchFile[0].lastIndexOf('/') + 1))
+      fileSet[patchFile[0].substring(patchFile[0].lastIndexOf('/') + 1)] = patchFile[1];
+    }
+
+    // TODO: 'Patching file' printed too many times
+    for(const k in GlobalLuaModel) {
+      const unpackedFiles = readInFolder(`${unpackedFolderPath}/${(GlobalLuaModel as any)[k]}`);
+      for(const unpackedFile of unpackedFiles) {
+        if(!(unpackedFile[0] in fileSet)) {
+          console.log(chalk.cyan('Packing with file ') + chalk.yellow(unpackedFile[0]));
+          res += '\n\n\n' + unpackedFile[1];
+        } else {
+          console.log(chalk.cyan('Patching file ') + chalk.yellow(unpackedFile[0]));
+          res += '\n\n\n' + fileSet[unpackedFile[0]];
+        }
+      }
     }
     console.log(chalk.cyan('Packing global lua script'));
     this.save.LuaScript = res;

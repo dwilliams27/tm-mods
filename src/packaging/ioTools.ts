@@ -64,11 +64,20 @@ export function readInSaveFile() {
   return save;
 }
 
-export function readInFolder(dir: string): string[] {
-  let res: string[] = [];
+// Returns list of [fileName, fileContents]
+export function readInFolder(dir: string): string[][] {
+  let res: string[][] = [];
   getFileList(dir).map((file) => {
-    res.push(readFileAsString(dir + '/' + file))
+    res.push([file, readFileAsString(dir + '/' + file)])
   });
+  return res;
+}
+
+export function readInFiles(dirs: string[]): string[][] {
+  let res: string[][] = [];
+  for(const dir of dirs) {
+    res.push([dir, readFileAsString(dir)]);
+  }
   return res;
 }
 

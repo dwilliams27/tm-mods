@@ -5,3 +5,4 @@ node_modules/
 unpacked/
 repacked/
 patch/
+.DS_Store
