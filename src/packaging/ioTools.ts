@@ -4,6 +4,7 @@ import { ObjectState, Save } from "../models";
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fse from "fs-extra";
+import AdmZip from 'adm-zip';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -118,4 +119,14 @@ export function setObjectStateByNickname(save: Save, nickname: string, objectSta
       return;
     }
   }
+}
+
+export function zipFiles(files: string[], output: string) {
+  const zipFile = new AdmZip();
+  
+  for(const file of files) {
+    zipFile.addLocalFile(file);
+  }
+
+  zipFile.writeZip(output + '.zip');
 }

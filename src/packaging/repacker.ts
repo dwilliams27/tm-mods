@@ -2,7 +2,8 @@ import chalk from 'chalk';
 import { mkdirSync } from 'fs'
 import { ModConfig, ObjectState, PATCH_DIR, RP_DIR, Save, UP_DIR } from '../models';
 import { GlobalLuaModel } from '../models/globalLuaModel';
-import { getFileList, getFolderList, getSafeName, readFileAsString, readInFiles, readInFolder, readJSONFile, safeMakeDir, setObjectStateByNickname, writeJsonFile } from './ioTools';
+import { getFileList, getFolderList, getSafeName, readFileAsString, readInFiles, readInFolder, readJSONFile, safeMakeDir, setObjectStateByNickname, writeJsonFile, zipFiles } from './ioTools';
+import path from 'path';
 
 export class Repacker {
   private save: Save;
@@ -83,7 +84,7 @@ export class Repacker {
       const bIndex = corpDeckObjectState.DeckIDs.findIndex((value) => parseInt(b.CardID) === value);
       return aIndex < bIndex ? -1 : 1;
     });
-    console.log(chalk.cyan('Packing file ') + chalk.yellow(deckFilePath));
+    console.log(chalk.cyan('Packing file ') + chalk.yellow(path.resolve(deckFilePath)));
     writeJsonFile(deckFilePath, corpDeckObjectState);
 
     setObjectStateByNickname(this.save, 'Corporations', corpDeckObjectState);
@@ -97,24 +98,41 @@ export class Repacker {
     const patchFiles = readInFiles(filesToPatch.map(((file) => PATCH_DIR + file)));
     const fileSet: { [key: string]: string} = {};
     for(const patchFile of patchFiles) {
-      console.log(patchFile[0].substring(patchFile[0].lastIndexOf('/') + 1))
       fileSet[patchFile[0].substring(patchFile[0].lastIndexOf('/') + 1)] = patchFile[1];
     }
 
+    const modContents: string[] = [];
+    modContents.push(PATCH_DIR + '/mod_config.json');
+
+    const modConfig: ModConfig = readJSONFile(PATCH_DIR + '/mod_config.json');
+
+     
     // TODO: 'Patching file' printed too many times
     for(const k in GlobalLuaModel) {
       const unpackedFiles = readInFolder(`${unpackedFolderPath}/${(GlobalLuaModel as any)[k]}`);
       for(const unpackedFile of unpackedFiles) {
         if(!(unpackedFile[0] in fileSet)) {
-          console.log(chalk.cyan('Packing with file ') + chalk.yellow(unpackedFile[0]));
+          // process.stdout.write(chalk.cyan('Packing with file ') + chalk.yellow(path.resolve(unpackedFile[0])) + '\r');
           res += '\n\n\n' + unpackedFile[1];
         } else {
-          console.log(chalk.cyan('Patching file ') + chalk.yellow(unpackedFile[0]));
+          console.log(chalk.cyan('Patching file ') + chalk.yellow(path.resolve(unpackedFile[0])));
+
           res += '\n\n\n' + fileSet[unpackedFile[0]];
+          modContents.push(`${unpackedFolderPath}/${(GlobalLuaModel as any)[k]}/${unpackedFile[0]}`);
+
+          delete fileSet[unpackedFile[0]]
         }
       }
     }
     console.log(chalk.cyan('Packing global lua script'));
+    
+    this.createPortableModZip(modContents, modConfig.name);
+
     this.save.LuaScript = res;
+  }
+
+  createPortableModZip(paths: string[], filename: string) {
+    console.log(chalk.cyan('Create mod zip at ') + chalk.yellow(path.resolve(RP_DIR + filename)));
+    zipFiles(paths, RP_DIR + filename);
   }
 }
