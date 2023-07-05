@@ -1,0 +1,7 @@
+{
+  "name":"Sample_mod",
+  "filesToPatch":[
+    "global/TimerFunctions/function_toggletimer___gameconfig_setup_timer.lua",
+    "global/GameConfigViews/__gameconfigbasicsettingsview.lua"
+  ]
+}
