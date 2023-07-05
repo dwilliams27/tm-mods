@@ -20,12 +20,13 @@ if(save !== null) {
       }
       case '--unpack': {
         const unpacker = new Unpacker(save);
-        unpacker.findAndUnpackBaseCorpDeck();
-        unpacker.unpackGlobalLuaScript();
+        unpacker.unpack();
         break;
       }
       case '--createPatch': {
         copyFolder(UP_DIR, PATCH_DIR);
+        const unpacker = new Unpacker(save);
+        unpacker.createModConfig();
         console.log(chalk.green('Success! Copied unpacked/ folder to patch/ folder, without overwriting any existing files in patch/'));
         break;
       }

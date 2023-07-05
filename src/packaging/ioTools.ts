@@ -92,6 +92,10 @@ export function safeMakeDir(dirPath: string) {
   }
 }
 
+export function fileExists(filePath: string) {
+  return existsSync(filePath);
+}
+
 export function copyFolder(source: string, destination: string) {
   try {
     fse.copySync(source, destination, { overwrite: false })

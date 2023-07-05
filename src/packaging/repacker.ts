@@ -37,7 +37,7 @@ export class Repacker {
     this.repackGlobalLua(filesToPatch);
 
     // Repack save.json
-    console.log(chalk.cyan('Packing save file ') + chalk.yellow(RP_DIR + 'save_output.json'));
+    console.log(chalk.cyan('Packing save file ') + chalk.yellow(path.resolve(RP_DIR + 'save_output.json')));
     writeJsonFile(RP_DIR + 'save_output.json', this.save);
     console.log(chalk.green('Repacking complete! Replace save in Tabletop Simulator/Mods/Workshop'));
   }
@@ -115,7 +115,7 @@ export class Repacker {
           // process.stdout.write(chalk.cyan('Packing with file ') + chalk.yellow(path.resolve(unpackedFile[0])) + '\r');
           res += '\n\n\n' + unpackedFile[1];
         } else {
-          console.log(chalk.cyan('Patching file ') + chalk.yellow(path.resolve(unpackedFile[0])));
+          console.log(chalk.cyan('Patching file ') + chalk.yellow(unpackedFile[0]));
 
           res += '\n\n\n' + fileSet[unpackedFile[0]];
           modContents.push(`${unpackedFolderPath}/${(GlobalLuaModel as any)[k]}/${unpackedFile[0]}`);
@@ -132,7 +132,7 @@ export class Repacker {
   }
 
   createPortableModZip(paths: string[], filename: string) {
-    console.log(chalk.cyan('Create mod zip at ') + chalk.yellow(path.resolve(RP_DIR + filename)));
+    console.log(chalk.cyan('Created mod zip at ') + chalk.yellow(path.resolve(RP_DIR + filename) + '.zip'));
     zipFiles(paths, RP_DIR + filename);
   }
 }

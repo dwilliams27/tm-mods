@@ -1,6 +1,6 @@
-import { ObjectState, Save, UP_DIR } from "../models";
+import { ObjectState, PATCH_DIR, Save, UP_DIR } from "../models";
 import * as fs from 'fs';
-import { findObjectStateByNickname, getSafeName, getSafeNameS, readFileAsString, safeMakeDir, writeFile, writeJsonFile } from "./ioTools";
+import { fileExists, findObjectStateByNickname, getSafeName, getSafeNameS, readFileAsString, safeMakeDir, writeFile, writeJsonFile } from "./ioTools";
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { GlobalLuaModel } from "../models/globalLuaModel";
@@ -18,6 +18,11 @@ export class Unpacker {
   constructor(save: Save) {
     this.save = save;
     safeMakeDir(UP_DIR);
+  }
+
+  unpack() {
+    this.findAndUnpackBaseCorpDeck();
+    this.unpackGlobalLuaScript();
   }
 
   findAndUnpackBaseCorpDeck() {
@@ -131,5 +136,11 @@ export class Unpacker {
 
   prepLuaTextForWrite(luaText: string) {
     return luaText.substring(1, luaText.length - 1);
+  }
+
+  createModConfig() {
+    if(!fileExists(PATCH_DIR + 'mod_config.json')) {
+      writeJsonFile(PATCH_DIR + 'mod_config.json', { name: "Sample_mod", filesToPatch: [] });
+    }
   }
 }
