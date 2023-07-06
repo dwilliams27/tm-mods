@@ -35,6 +35,7 @@ export class Unpacker {
   unpackGlobalLuaScript() {
     try {
       fs.writeFileSync(`${UP_DIR}global.lua`, this.save.LuaScript);
+      fs.writeFileSync(`${UP_DIR}state.json`, this.save.LuaScriptState);
     } catch (e) {
       console.error(e);
     }

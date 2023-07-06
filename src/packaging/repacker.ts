@@ -35,6 +35,7 @@ export class Repacker {
       --------------------
     */
     this.repackGlobalLua(filesToPatch);
+    this.repackGlobalLuaState();
 
     // Repack save.json
     console.log(chalk.cyan('Packing save file ') + chalk.yellow(path.resolve(RP_DIR + 'save_output.json')));
@@ -47,6 +48,10 @@ export class Repacker {
     this.save.SaveName = modConfig.name;
 
     return modConfig.filesToPatch;
+  }
+
+  repackGlobalLuaState() {
+    this.save.LuaScriptState = '"' + readJSONFile(`${PATCH_DIR}state.json`) + '"';
   }
 
   repackCorporations(repackFromPatch: boolean) {
@@ -103,6 +108,7 @@ export class Repacker {
 
     const modContents: string[] = [];
     modContents.push(PATCH_DIR + '/mod_config.json');
+    modContents.push(PATCH_DIR + '/state.json');
 
     const modConfig: ModConfig = readJSONFile(PATCH_DIR + '/mod_config.json');
 
@@ -120,7 +126,7 @@ export class Repacker {
           res += '\n\n\n' + fileSet[unpackedFile[0]];
           modContents.push(`${unpackedFolderPath}/${(GlobalLuaModel as any)[k]}/${unpackedFile[0]}`);
 
-          delete fileSet[unpackedFile[0]]
+          // delete fileSet[unpackedFile[0]]
         }
       }
     }
