@@ -1,14 +1,9 @@
 import chalk from "chalk";
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "fs";
-import { ObjectState, Save } from "../models/models";
-import { fileURLToPath } from 'url';
-import path from 'path';
+import { ObjectState, Save, UP_DIR } from "../../models/game-models";
 import fse from "fs-extra";
 import AdmZip from 'adm-zip';
 import prettier from 'prettier';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 export function getFolderList(folderPath: string) {
   return readdirSync(folderPath, { withFileTypes: true })
@@ -54,11 +49,11 @@ export function getSafeNameS(str: string) {
 }
 
 export function readInSaveFile() {
-  const saveFile = getFileList(__dirname + '/../../saves/').filter((file) => !file.includes('.bak'))[0];
+  const saveFile = getFileList(UP_DIR + '../saves/').filter((file) => !file.includes('.bak'))[0];
   console.log(chalk.cyan('Reading in save file: ') + chalk.yellow(saveFile));
   let save: Save | null = null;
   try {
-    save = readJSONFile(__dirname + '/../../saves/' + saveFile);
+    save = readJSONFile(UP_DIR + '../saves/' + saveFile);
   } catch (e) {
     console.error(e);
     return null;
@@ -143,8 +138,4 @@ export function formatLuaPrettier(content: string) {
     console.error("Lua auto-formtatting failed!");
     return content;
   }
-}
-
-export function generateObjectStateFolderName(state: ObjectState) {
-  return state.Name + (state.Nickname ? state.Nickname : '') + '/';
 }

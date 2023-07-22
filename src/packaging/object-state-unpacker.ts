@@ -1,5 +1,6 @@
 import { GUIDState, ObjectState, PATCH_DIR } from "../models/game-models";
-import { generateObjectStateFolderName, safeMakeDir, writeJsonFile } from "./ioTools";
+import { safeMakeDir, writeJsonFile } from "./tools/io-tools";
+import { generateObjectStateFolderName } from "./tools/name-tools";
 
 export class ObjectStateUnpacker {
   private _objectStates: ObjectState[] = []
@@ -28,9 +29,9 @@ export class ObjectStateUnpacker {
   public writeGUID(state: ObjectState, path: string) {
     const guidJSON = state as GUIDState;
     writeJsonFile(path + state.GUID + '.json', guidJSON);
-    writeJsonFile(path + state.GUID + '.lua', state.LuaScript);
-    writeJsonFile(path + state.GUID + '.state.json', state.LuaScriptState);
-    if(state.ContainedObjects.length > 0) {
+    if(state.LuaScript) writeJsonFile(path + state.GUID + '.lua', state.LuaScript);
+    if(state.LuaScriptState) writeJsonFile(path + state.GUID + '.state.json', state.LuaScriptState);
+    if(state.ContainedObjects) {
       const workingFolder = path + state.GUID + '/';
       safeMakeDir(workingFolder);
       this.createObjectStateNamedFolder(state, workingFolder);

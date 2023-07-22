@@ -1,7 +1,7 @@
 import { Unpacker } from "./packaging/unpacker";
 import 'source-map-support/register';
 import { Repacker } from "./packaging/repacker";
-import { copyFolder, readInSaveFile } from "./packaging/ioTools";
+import { copyFolder, readInSaveFile } from "./packaging/tools/io-tools";
 import chalk from "chalk";
 import { PATCH_DIR, UP_DIR } from "./models/game-models";
 

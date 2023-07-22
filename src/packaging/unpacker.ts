@@ -1,6 +1,6 @@
 import { ObjectState, PATCH_DIR, Save, UP_DIR } from "../models/game-models";
 import * as fs from 'fs';
-import { fileExists, findObjectStateByNickname, formatLuaPrettier, getSafeName, getSafeNameS, readFileAsString, safeMakeDir, writeFile, writeJsonFile } from "./ioTools";
+import { fileExists, findObjectStateByNickname, formatLuaPrettier, getSafeName, getSafeNameS, readFileAsString, safeMakeDir, writeFile, writeJsonFile } from "./tools/io-tools";
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { GlobalLuaModel } from "../models/global-lua-model";
@@ -8,6 +8,7 @@ import { existsSync } from "fs";
 import chalk from "chalk";
 import prettier from 'prettier';
 import { ObjectStateUnpacker } from "./object-state-unpacker";
+import { generateGUIDMap } from "./tools/name-tools";
 
 // TODO
 const __filename = fileURLToPath(import.meta.url);
@@ -22,26 +23,41 @@ export class Unpacker {
   }
 
   unpack() {
-    // Deprecated this.findAndUnpackBaseCorpDeck();
+    /* 
+      --------------------
+      ---- Global Lua ----
+      --------------------
+    */
+    console.log(chalk.cyan('--- Writing Global Lua ---'));
     this.unpackGlobalLuaScript();
+    console.log(chalk.cyan('--- Done Writing Global Lua ---\n'));
 
-    const objectStateDir = UP_DIR + 'object_states/';
+    /* 
+      --------------------
+      ----- GUID Map -----
+      --------------------
+    */
+    console.log(chalk.cyan('--- Generating GUID Map ---'));
+    generateGUIDMap(this._save);
+    console.log(chalk.cyan('--- Done generating GUID Map ---\n'));
+
+    /* 
+      --------------------
+      -- Recursive Objs --
+      --------------------
+    */
+    const objectStateDir = UP_DIR + 'object-states/';
     safeMakeDir(objectStateDir);
     const objectStateUnpacker = new ObjectStateUnpacker(this._save.ObjectStates, objectStateDir);
     objectStateUnpacker.unpackAll();
   }
 
-  findAndUnpackBaseCorpDeck() {
-    // Little dangerous
-    const baseCorpDeck = findObjectStateByNickname(this._save, 'Corporations') as ObjectState;
-    
-    this.unpackDeckToFolder(baseCorpDeck);
-  }
-
   unpackGlobalLuaScript() {
     try {
       fs.writeFileSync(`${UP_DIR}global.lua`, this._save.LuaScript);
-      fs.writeFileSync(`${UP_DIR}state.json`, this._save.LuaScriptState);
+      if(this._save.LuaScriptState) {
+        fs.writeFileSync(`${UP_DIR}state.json`, this._save.LuaScriptState);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -93,38 +109,6 @@ export class Unpacker {
       writeFile(`${UP_DIR}global/${folderName}/${getSafeNameS(fileName)}.lua`, formatLuaPrettier(fileContents));
     }
     console.log(chalk.yellow('Wrote Global Lua Chunk ') + chalk.green(folderName));
-  }
-
-  unpackDeckToFolder(objectState: ObjectState, prefix?: string) {
-    // Use nickname as folder name, spaces to _
-    const safeNickname = getSafeName(objectState);
-    const folderName = (prefix ? prefix : '') + safeNickname;
-    const destinationDir = UP_DIR + folderName;
-    
-    safeMakeDir(destinationDir);
-    for(let obj of objectState.ContainedObjects) {
-      let content: ObjectState = obj;
-      const cardFolder = destinationDir + '/' + obj.GUID + '/';
-      const safeCorpName = getSafeName(content);
-
-      safeMakeDir(cardFolder);
-      
-      if(content.LuaScript !== '') {
-        writeFile(cardFolder + safeCorpName + '.lua', this.prepLuaTextForWrite(content.LuaScript));
-        
-        content.LuaScript = `./${safeCorpName}.lua`;
-      }
-
-      try {
-        writeJsonFile(cardFolder + safeCorpName + '.json', content);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    const deckMetadata: Partial<ObjectState> = objectState;
-    delete deckMetadata.ContainedObjects;
-    writeJsonFile(destinationDir + '/' + safeNickname + '.json', deckMetadata);
   }
 
   saveObjectWithoutContained(objectState: ObjectState, fileName: string) {

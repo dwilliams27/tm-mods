@@ -63,45 +63,49 @@ export interface ObjectState {
   Nickname?: string,
   Description?: string,
   GMNotes?: string,
-  AltLookAngle : XYZ,
-  ColorDiffuse: RGBA,
-  LayoutGroupSortIndex: number,
-  Value: number,
-  Locked: boolean,
-  Grid: boolean,
-  Snap: boolean,
-  IgnoreFoW: boolean,
-  MeasureMovement: boolean,
-  DragSelectable: boolean,
-  Autoraise: boolean,
-  Sticky: boolean,
-  Tooltip: boolean,
-  GridProjection: boolean,
-  HideWhenFaceDown: boolean,
-  Hands: boolean,
-  CardID: string,
-  SidewaysCard: boolean,
-  DeckIDs: number[], // Maps to CardID property of child
-  CustomDeck: { [key: string]: { 
-    FaceURL: string, 
-    BackURL: string, 
-    NumWidth: number, 
-    NumHeight: number, 
-    BackIsHidden: boolean, 
-    UniqueBack: boolean, 
-    Type: number 
+  AltLookAngle?: XYZ,
+  ColorDiffuse?: RGBA,
+  LayoutGroupSortIndex?: number,
+  Value?: number,
+  Locked?: boolean,
+  Grid?: boolean,
+  Snap?: boolean,
+  IgnoreFoW?: boolean,
+  MeasureMovement?: boolean,
+  DragSelectable?: boolean,
+  Autoraise?: boolean,
+  Sticky?: boolean,
+  Tooltip?: boolean,
+  GridProjection?: boolean,
+  HideWhenFaceDown?: boolean,
+  Hands?: boolean,
+  CardID?: string,
+  SidewaysCard?: boolean,
+  DeckIDs?: number[], // Maps to CardID property of child
+  CustomDeck?: { [key: string]: { 
+    FaceURL?: string, 
+    BackURL?: string, 
+    NumWidth?: number, 
+    NumHeight?: number, 
+    BackIsHidden?: boolean, 
+    UniqueBack?: boolean, 
+    Type?: number 
   } }
-  FogColor: string,
-  LuaScript: string,
-  LuaScriptState: string,
-  XmlUI: string
-  ContainedObjects: ObjectState[]
+  FogColor?: string,
+  LuaScript?: string,
+  LuaScriptState?: string,
+  XmlUI?: string
+  ContainedObjects?: ObjectState[]
 }
 
 /**
  * Information for storing GUID.json file
  */
-export type GUIDState = Omit<ObjectState, 'LuaScript' | 'LuaScriptState' | 'ContainedObjects'>;
+export type GUIDState = Omit<ObjectState, 'LuaScript' | 'LuaScriptState' | 'ContainedObjects'> & {
+  _index?: number,
+  _uid?: string,
+  _uguid?: string 
+};
 
 export interface XYZ {
   x: number,
@@ -160,8 +164,8 @@ export interface ModConfig {
 }
 
 // TODO: Move to top level not relative imports
-export const UP_DIR = __dirname + '/../unpacked/';
+export const UP_DIR = __dirname + '/../../unpacked/';
 
-export const RP_DIR = __dirname + '/../repacked/';
+export const RP_DIR = __dirname + '/../../repacked/';
 
-export const PATCH_DIR = __dirname + '/../patch/';
+export const PATCH_DIR = __dirname + '/../../patch/';

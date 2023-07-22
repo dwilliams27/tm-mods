@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import { mkdirSync } from 'fs'
-import { ModConfig, ObjectState, PATCH_DIR, RP_DIR, Save, UP_DIR } from '../models/models';
-import { GlobalLuaModel } from '../models/globalLuaModel';
-import { getFileList, getFolderList, getSafeName, readFileAsString, readInFiles, readInFolder, readJSONFile, safeMakeDir, setObjectStateByNickname, writeJsonFile, zipFiles } from './ioTools';
+import { ModConfig, ObjectState, PATCH_DIR, RP_DIR, Save, UP_DIR } from '../models/game-models';
+import { GlobalLuaModel } from '../models/global-lua-model';
+import { getFileList, getFolderList, getSafeName, readFileAsString, readInFiles, readInFolder, readJSONFile, safeMakeDir, setObjectStateByNickname, writeJsonFile, zipFiles } from './tools/io-tools';
 import path from 'path';
 
 export class Repacker {
@@ -84,11 +84,11 @@ export class Repacker {
     }
     const corpDeckObjectState: ObjectState = readJSONFile(sourceFolder + '/corporations/corporations.json');
     const deckFilePath = RP_DIR + 'corporations/' + getSafeName(corpDeckObjectState) + '.json';
-    corpDeckObjectState.ContainedObjects = containedObjects.sort((a, b) => {
-      const aIndex = corpDeckObjectState.DeckIDs.findIndex((value) => parseInt(a.CardID) === value);
-      const bIndex = corpDeckObjectState.DeckIDs.findIndex((value) => parseInt(b.CardID) === value);
-      return aIndex < bIndex ? -1 : 1;
-    });
+    // corpDeckObjectState.ContainedObjects = containedObjects.sort((a, b) => {
+    //   const aIndex = corpDeckObjectState.DeckIDs?.findIndex((value) => parseInt(a.CardID ?? '') === value);
+    //   const bIndex = corpDeckObjectState.DeckIDs?.findIndex((value) => parseInt(b.CardID ?? '') === value);
+    //   return aIndex < bIndex ? -1 : 1;
+    // });
     console.log(chalk.cyan('Packing file ') + chalk.yellow(path.resolve(deckFilePath)));
     writeJsonFile(deckFilePath, corpDeckObjectState);
 
