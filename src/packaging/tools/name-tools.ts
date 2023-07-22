@@ -1,8 +1,16 @@
 import { FriendlyObjectState, GUIDMap, GUIDNode } from "../../models/custom-models";
 import { GUIDState, ObjectState, Save } from "../../models/game-models";
 
+export const MAX_FRIENDLY_NAME_LEN = 15;
+
 export function generateObjectStateFolderName(state: GUIDState) {
-  return (state.Name + (state.Nickname ? state.Nickname : '')).replace(/[\/]+/g, '-') + '/';
+  let name = (state.Name + (state.Nickname ? state.Nickname : ''))
+    .replace(/[\/]+/g, '-')
+    .replace(/[ ]+/g, '_');
+  if(name.length > MAX_FRIENDLY_NAME_LEN) {
+    name = name.substring(0, MAX_FRIENDLY_NAME_LEN);
+  }
+  return name;
 }
 
 // TODO: How to preserve order for repacking?
@@ -23,22 +31,18 @@ export function generateGUIDMap(save: Save) {
   };
   map['ROOT'] = node;
 
-  generateGUIDMapHelper({ GUID: 'ROOT', Name: 'ROOT', ContainedObjects: save.ObjectStates }, map, node, {});
+  generateGUIDMapHelper({ GUID: 'ROOT', Name: 'ROOT', ContainedObjects: save.ObjectStates }, map, node);
   return map;
 }
 
-function generateGUIDMapHelper(state: ObjectState, map: GUIDMap, node: GUIDNode, duplicates: { [key: string]: number }) {
+function generateGUIDMapHelper(state: ObjectState, map: GUIDMap, node: GUIDNode) {
   if(state.ContainedObjects) {
     state.ContainedObjects.forEach((obj, index) => {
       let uguid = obj.GUID;
       if(uguid in map) {
         console.log('Duplicate GUID found: ' + uguid);
-        if(uguid in duplicates) {
-          duplicates[uguid] += 1;
-        } else {
-          duplicates[uguid] = 0;
-        }
-        uguid += duplicates[uguid];
+        console.log('Appending description to key (Will fail if duplicate descriptions as well)');
+        uguid = generateUniqueGUID(state);
       }
       map[obj.GUID] = {
         guid: obj.GUID,
@@ -49,8 +53,12 @@ function generateGUIDMapHelper(state: ObjectState, map: GUIDMap, node: GUIDNode,
       };
       node.children.push(map[obj.GUID]);
 
-      generateGUIDMapHelper(obj, map, map[obj.GUID], duplicates);
+      generateGUIDMapHelper(obj, map, map[obj.GUID]);
     });
   }
   return node;
+}
+
+export function generateUniqueGUID(state: ObjectState) {
+  return state.GUID + (state.Description ? '%' + state.Description : '');
 }

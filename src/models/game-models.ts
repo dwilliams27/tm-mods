@@ -101,11 +101,13 @@ export interface ObjectState {
 /**
  * Information for storing GUID.json file
  */
-export type GUIDState = Omit<ObjectState, 'LuaScript' | 'LuaScriptState' | 'ContainedObjects'> & {
+export interface GUIDState extends ObjectState {
   _index?: number,
   _uid?: string,
   _uguid?: string 
 };
+
+export type GUIDStateToWrite = Omit<GUIDState, 'LuaScript' | 'LuaScriptState' | 'ContainedObjects'>
 
 export interface XYZ {
   x: number,

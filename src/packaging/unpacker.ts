@@ -38,7 +38,7 @@ export class Unpacker {
       --------------------
     */
     console.log(chalk.cyan('--- Generating GUID Map ---'));
-    generateGUIDMap(this._save);
+    const guidMap = generateGUIDMap(this._save);
     console.log(chalk.cyan('--- Done generating GUID Map ---\n'));
 
     /* 
@@ -48,7 +48,7 @@ export class Unpacker {
     */
     const objectStateDir = UP_DIR + 'object-states/';
     safeMakeDir(objectStateDir);
-    const objectStateUnpacker = new ObjectStateUnpacker(this._save.ObjectStates, objectStateDir);
+    const objectStateUnpacker = new ObjectStateUnpacker(this._save.ObjectStates, objectStateDir, guidMap);
     objectStateUnpacker.unpackAll();
   }
 
