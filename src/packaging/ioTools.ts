@@ -1,10 +1,11 @@
 import chalk from "chalk";
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "fs";
-import { ObjectState, Save } from "../models";
+import { ObjectState, Save } from "../models/models";
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fse from "fs-extra";
 import AdmZip from 'adm-zip';
+import prettier from 'prettier';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -45,7 +46,7 @@ export function writeJsonFile(filePath: string, content: any) {
 }
 
 export function getSafeName(objectState: ObjectState) {
-  return objectState.Nickname.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+  return objectState.Nickname?.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 }
 
 export function getSafeNameS(str: string) {
@@ -133,4 +134,17 @@ export function zipFiles(files: string[], output: string) {
   }
 
   zipFile.writeZip(output + '.zip');
+}
+
+export function formatLuaPrettier(content: string) {
+  try {
+    return prettier.format(content, { semi: false, parser: "lua" })
+  } catch(e) {
+    console.error("Lua auto-formtatting failed!");
+    return content;
+  }
+}
+
+export function generateObjectStateFolderName(state: ObjectState) {
+  return state.Name + (state.Nickname ? state.Nickname : '') + '/';
 }

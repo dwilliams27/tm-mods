@@ -4,6 +4,23 @@ import path from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+/**
+ * Game save should unroll into:
+ * global/ - Largest, main script in file
+ * state.lua - Top level state
+ * mod_config.json - Mod metadata
+ * contained_objects/ - Next level down
+ * 
+ * Each level below the top defined by "Name(_Nickname)/":
+ * GUID.json - All variables except LuaScript, LuaScriptState, and ContainedObjects
+ * GUID.lua
+ * GUID.state.json
+ * (GUID/) - Contained objects (if any)
+ */
+
+/**
+ * Top level save game data
+ */
 export interface Save {
   SaveName: string,
   EpochTime: string,
@@ -36,14 +53,17 @@ export interface Save {
   ObjectStates: ObjectState[]
 }
 
+/**
+ * State object that can contain other state objects
+ */
 export interface ObjectState {
   GUID: string,
   Name: string,
-  Transform: Transform,
-  Nickname: string,
-  Description: string,
-  GMNotes: string,
-  AltLookAngle: XYZ,
+  Transform?: Transform,
+  Nickname?: string,
+  Description?: string,
+  GMNotes?: string,
+  AltLookAngle : XYZ,
   ColorDiffuse: RGBA,
   LayoutGroupSortIndex: number,
   Value: number,
@@ -61,7 +81,7 @@ export interface ObjectState {
   Hands: boolean,
   CardID: string,
   SidewaysCard: boolean,
-  DeckIDs: number[],
+  DeckIDs: number[], // Maps to CardID property of child
   CustomDeck: { [key: string]: { 
     FaceURL: string, 
     BackURL: string, 
@@ -77,6 +97,11 @@ export interface ObjectState {
   XmlUI: string
   ContainedObjects: ObjectState[]
 }
+
+/**
+ * Information for storing GUID.json file
+ */
+export type GUIDState = Omit<ObjectState, 'LuaScript' | 'LuaScriptState' | 'ContainedObjects'>;
 
 export interface XYZ {
   x: number,
@@ -134,6 +159,7 @@ export interface ModConfig {
   filesToPatch: string[]
 }
 
+// TODO: Move to top level not relative imports
 export const UP_DIR = __dirname + '/../unpacked/';
 
 export const RP_DIR = __dirname + '/../repacked/';

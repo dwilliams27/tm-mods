@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { mkdirSync } from 'fs'
-import { ModConfig, ObjectState, PATCH_DIR, RP_DIR, Save, UP_DIR } from '../models';
+import { ModConfig, ObjectState, PATCH_DIR, RP_DIR, Save, UP_DIR } from '../models/models';
 import { GlobalLuaModel } from '../models/globalLuaModel';
 import { getFileList, getFolderList, getSafeName, readFileAsString, readInFiles, readInFolder, readJSONFile, safeMakeDir, setObjectStateByNickname, writeJsonFile, zipFiles } from './ioTools';
 import path from 'path';

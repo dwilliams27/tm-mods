@@ -1,41 +1,47 @@
-import { ObjectState, PATCH_DIR, Save, UP_DIR } from "../models";
+import { ObjectState, PATCH_DIR, Save, UP_DIR } from "../models/game-models";
 import * as fs from 'fs';
-import { fileExists, findObjectStateByNickname, getSafeName, getSafeNameS, readFileAsString, safeMakeDir, writeFile, writeJsonFile } from "./ioTools";
+import { fileExists, findObjectStateByNickname, formatLuaPrettier, getSafeName, getSafeNameS, readFileAsString, safeMakeDir, writeFile, writeJsonFile } from "./ioTools";
 import { fileURLToPath } from 'url';
 import path from 'path';
-import { GlobalLuaModel } from "../models/globalLuaModel";
+import { GlobalLuaModel } from "../models/global-lua-model";
 import { existsSync } from "fs";
 import chalk from "chalk";
 import prettier from 'prettier';
+import { ObjectStateUnpacker } from "./object-state-unpacker";
 
 // TODO
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export class Unpacker {
-  private save: Save;
+  private _save: Save;
 
   constructor(save: Save) {
-    this.save = save;
+    this._save = save;
     safeMakeDir(UP_DIR);
   }
 
   unpack() {
-    this.findAndUnpackBaseCorpDeck();
+    // Deprecated this.findAndUnpackBaseCorpDeck();
     this.unpackGlobalLuaScript();
+
+    const objectStateDir = UP_DIR + 'object_states/';
+    safeMakeDir(objectStateDir);
+    const objectStateUnpacker = new ObjectStateUnpacker(this._save.ObjectStates, objectStateDir);
+    objectStateUnpacker.unpackAll();
   }
 
   findAndUnpackBaseCorpDeck() {
     // Little dangerous
-    const baseCorpDeck = findObjectStateByNickname(this.save, 'Corporations') as ObjectState;
+    const baseCorpDeck = findObjectStateByNickname(this._save, 'Corporations') as ObjectState;
     
     this.unpackDeckToFolder(baseCorpDeck);
   }
 
   unpackGlobalLuaScript() {
     try {
-      fs.writeFileSync(`${UP_DIR}global.lua`, this.save.LuaScript);
-      fs.writeFileSync(`${UP_DIR}state.json`, this.save.LuaScriptState);
+      fs.writeFileSync(`${UP_DIR}global.lua`, this._save.LuaScript);
+      fs.writeFileSync(`${UP_DIR}state.json`, this._save.LuaScriptState);
     } catch (e) {
       console.error(e);
     }
@@ -84,18 +90,9 @@ export class Unpacker {
       const fileContents = sections[k];
       const fileName = fileContents.substring(0,fileContents.indexOf('='));
 
-      writeFile(`${UP_DIR}global/${folderName}/${getSafeNameS(fileName)}.lua`, this.formatLuaPrettier(fileContents));
+      writeFile(`${UP_DIR}global/${folderName}/${getSafeNameS(fileName)}.lua`, formatLuaPrettier(fileContents));
     }
     console.log(chalk.yellow('Wrote Global Lua Chunk ') + chalk.green(folderName));
-  }
-
-  formatLuaPrettier(content: string) {
-    try {
-      return prettier.format(content, { semi: false, parser: "lua" })
-    } catch(e) {
-      console.error("Lua auto-formtatting failed!");
-      return content;
-    }
   }
 
   unpackDeckToFolder(objectState: ObjectState, prefix?: string) {

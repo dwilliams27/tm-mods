@@ -3,7 +3,7 @@ import 'source-map-support/register';
 import { Repacker } from "./packaging/repacker";
 import { copyFolder, readInSaveFile } from "./packaging/ioTools";
 import chalk from "chalk";
-import { PATCH_DIR, UP_DIR } from "./models";
+import { PATCH_DIR, UP_DIR } from "./models/game-models";
 
 
 const save = readInSaveFile();
