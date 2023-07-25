@@ -1,7 +1,7 @@
 import { FriendlyObjectState, GUIDMap, GUIDNode } from "../../models/custom-models";
 import { GUIDState, ObjectState, Save } from "../../models/game-models";
 
-export const MAX_FRIENDLY_NAME_LEN = 15;
+export const MAX_FRIENDLY_NAME_LEN = 30;
 
 export function generateObjectStateFolderName(state: GUIDState) {
   let name = (state.Name + (state.Nickname ? state.Nickname : ''))
@@ -59,6 +59,7 @@ function generateGUIDMapHelper(state: ObjectState, map: GUIDMap, node: GUIDNode)
   return node;
 }
 
+// TODO: Kinda hackey, since a few edge cases with GUIDs not being unique
 export function generateUniqueGUID(state: ObjectState) {
-  return state.GUID + (state.Description ? '%' + state.Description : '');
+  return state.GUID + (state.Description ? '%' + (state.Description.length > 5 ? state.Description.substring(0,5) : state.Description) : '');
 }

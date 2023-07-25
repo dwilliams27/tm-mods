@@ -46,10 +46,12 @@ export class Unpacker {
       -- Recursive Objs --
       --------------------
     */
+    console.log(chalk.cyan('--- Unrolling Object States ---'));
     const objectStateDir = UP_DIR + 'object-states/';
     safeMakeDir(objectStateDir);
     const objectStateUnpacker = new ObjectStateUnpacker(this._save.ObjectStates, objectStateDir, guidMap);
     objectStateUnpacker.unpackAll();
+    console.log(chalk.cyan('--- Done Unrolling Object States ---'));
   }
 
   unpackGlobalLuaScript() {
@@ -114,10 +116,6 @@ export class Unpacker {
   saveObjectWithoutContained(objectState: ObjectState, fileName: string) {
     const obj: Omit<ObjectState, "ContainedObjects"> = objectState;
     writeJsonFile(fileName, obj);
-  }
-
-  prepLuaTextForWrite(luaText: string) {
-    return luaText.substring(1, luaText.length - 1);
   }
 
   createModConfig() {

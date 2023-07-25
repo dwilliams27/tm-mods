@@ -135,7 +135,7 @@ export function formatLuaPrettier(content: string) {
   try {
     return prettier.format(content, { semi: false, parser: "lua" })
   } catch(e) {
-    console.error("Lua auto-formtatting failed!");
+    console.error("Lua auto-formatting failed!");
     return content;
   }
 }

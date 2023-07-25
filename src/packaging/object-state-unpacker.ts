@@ -1,6 +1,6 @@
 import { GUIDMap } from "../models/custom-models";
 import { GUIDState, GUIDStateToWrite, ObjectState, PATCH_DIR } from "../models/game-models";
-import { safeMakeDir, writeJsonFile } from "./tools/io-tools";
+import { formatLuaPrettier, safeMakeDir, writeFile, writeJsonFile } from "./tools/io-tools";
 import { generateObjectStateFolderName, generateUniqueGUID } from "./tools/name-tools";
 
 export class ObjectStateUnpacker {
@@ -31,13 +31,14 @@ export class ObjectStateUnpacker {
    */
   public writeGUID(state: GUIDState, path: string) {
     const guidJSON = state as GUIDState;
-    const readableName = generateObjectStateFolderName(state) + (guidJSON.GUID in this._map ? guidJSON.GUID : generateUniqueGUID(state));
-    writeJsonFile(path + readableName + '.json', guidJSON as GUIDStateToWrite);
-    if(state.LuaScript) writeJsonFile(path + readableName + '.lua', state.LuaScript);
-    if(state.LuaScriptState) writeJsonFile(path + readableName + '.state.json', state.LuaScriptState);
+    const folderName = generateObjectStateFolderName(state);
+    const readableName = generateObjectStateFolderName(state) + '_' + (guidJSON.GUID in this._map ? guidJSON.GUID : generateUniqueGUID(state));
+    const workingFolder = path + folderName + '/';
+    safeMakeDir(workingFolder);
+    writeJsonFile(workingFolder + readableName + '.json', guidJSON as GUIDStateToWrite);
+    if(state.LuaScript) writeFile(workingFolder + readableName + '.lua', formatLuaPrettier(state.LuaScript));
+    if(state.LuaScriptState) writeFile(workingFolder + readableName + '.state.json', formatLuaPrettier(state.LuaScriptState));
     if(state.ContainedObjects) {
-      const workingFolder = path + readableName + '/';
-      safeMakeDir(workingFolder);
       state.ContainedObjects.forEach((obj, index) => {
         const stateToWrite: GUIDState = obj;
         stateToWrite._index = index;
