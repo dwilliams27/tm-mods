@@ -1,10 +1,11 @@
 import chalk from "chalk";
+import prettier from "prettier";
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "fs";
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fse from "fs-extra";
 import AdmZip from 'adm-zip';
-import { ObjectState, Save } from "../models.js";
+import { ObjectState, Save, UP_DIR } from "../../models";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

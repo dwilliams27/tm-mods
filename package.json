@@ -1,6 +1,6 @@
 {
   "name": "tm-mods",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Attempting to make custom corps for Terraforming Mars",
   "main": "index.js",
   "type": "module",

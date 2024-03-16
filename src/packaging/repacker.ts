@@ -1,8 +1,20 @@
 import chalk from 'chalk';
 import path from 'path';
-import { ModConfig, ObjectState, PATCH_DIR, RP_DIR, Save, UP_DIR } from '../models.js';
-import { GlobalLuaModel } from '../models/globalLuaModel.js';
-import { getFileList, getFolderList, getSafeName, readFileAsString, readInFiles, readInFolder, readJSONFile, safeMakeDir, setObjectStateByNickname, writeJsonFile, zipFiles } from './ioTools.js';
+import { ModConfig, ObjectState, PATCH_DIR, RP_DIR, Save, UP_DIR } from '../models';
+import { GlobalLuaModel } from '../models';
+import {
+  getFileList,
+  getFolderList,
+  getSafeName,
+  readFileAsString,
+  readInFiles,
+  readInFolder,
+  readJSONFile,
+  safeMakeDir,
+  setObjectStateByNickname,
+  writeJsonFile,
+  zipFiles 
+} from './tools';
 
 export class Repacker {
   private save: Save;

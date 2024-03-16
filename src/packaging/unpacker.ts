@@ -3,9 +3,18 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import chalk from "chalk";
 import prettier from 'prettier';
-import { ObjectState, PATCH_DIR, Save, UP_DIR } from "../models.js";
-import { GlobalLuaModel } from "../models/globalLuaModel.js";
-import { fileExists, findObjectStateByNickname, getSafeName, getSafeNameS, readFileAsString, safeMakeDir, writeFile, writeJsonFile } from "./ioTools.js";
+import { ObjectState, PATCH_DIR, Save, UP_DIR, GlobalLuaModel } from "../models";
+import {
+  fileExists,
+  formatLuaPrettier,
+  generateGUIDMap,
+  getSafeNameS,
+  readFileAsString,
+  safeMakeDir,
+  writeFile, 
+  writeJsonFile
+} from "./tools";
+import { ObjectStateUnpacker } from './object-state-unpacker';
 // TODO
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -52,15 +61,8 @@ export class Unpacker {
 
   unpackGlobalLuaScript() {
     try {
-<<<<<<< HEAD
-      fs.writeFileSync(`${UP_DIR}global.lua`, this._save.LuaScript);
-      if(this._save.LuaScriptState) {
-        fs.writeFileSync(`${UP_DIR}state.json`, this._save.LuaScriptState);
-      }
-=======
-      fs.writeFileSync(`${UP_DIR}global/global.lua`, this.save.LuaScript);
-      fs.writeFileSync(`${UP_DIR}global/state.json`, this.save.LuaScriptState);
->>>>>>> fb4e27d (fix module resolution issues)
+      fs.writeFileSync(`${UP_DIR}global/global.lua`, this._save.LuaScript);
+      fs.writeFileSync(`${UP_DIR}global/state.json`, this._save.LuaScriptState);
     } catch (e) {
       console.error(e);
     }
