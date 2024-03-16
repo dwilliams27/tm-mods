@@ -1,9 +1,20 @@
 import chalk from 'chalk';
-import { mkdirSync } from 'fs'
-import { ModConfig, ObjectState, PATCH_DIR, RP_DIR, Save, UP_DIR } from '../models/game-models';
-import { GlobalLuaModel } from '../models/global-lua-model';
-import { getFileList, getFolderList, getSafeName, readFileAsString, readInFiles, readInFolder, readJSONFile, safeMakeDir, setObjectStateByNickname, writeJsonFile, zipFiles } from './tools/io-tools';
 import path from 'path';
+import { ModConfig, ObjectState, PATCH_DIR, RP_DIR, Save, UP_DIR } from '../models';
+import { GlobalLuaModel } from '../models';
+import {
+  getFileList,
+  getFolderList,
+  getSafeName,
+  readFileAsString,
+  readInFiles,
+  readInFolder,
+  readJSONFile,
+  safeMakeDir,
+  setObjectStateByNickname,
+  writeJsonFile,
+  zipFiles 
+} from './tools';
 
 export class Repacker {
   private save: Save;
@@ -35,7 +46,6 @@ export class Repacker {
       --------------------
     */
     this.repackGlobalLua(filesToPatch);
-    this.repackGlobalLuaState();
 
     // Repack save.json
     console.log(chalk.cyan('Packing save file ') + chalk.yellow(path.resolve(RP_DIR + 'save_output.json')));
@@ -48,10 +58,6 @@ export class Repacker {
     this.save.SaveName = modConfig.name;
 
     return modConfig.filesToPatch;
-  }
-
-  repackGlobalLuaState() {
-    this.save.LuaScriptState = '"' + readJSONFile(`${PATCH_DIR}state.json`) + '"';
   }
 
   repackCorporations(repackFromPatch: boolean) {
