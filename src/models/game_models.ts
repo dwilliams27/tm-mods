@@ -170,4 +170,8 @@ export const UP_DIR = __dirname + '/../../unpacked/';
 
 export const RP_DIR = __dirname + '/../../repacked/';
 
+export const SAVES_DIR = __dirname + '/../../saves/';
+
 export const PATCH_DIR = __dirname + '/../../patch/';
+
+export const MOD_DIR = __dirname + '/../../mod/';

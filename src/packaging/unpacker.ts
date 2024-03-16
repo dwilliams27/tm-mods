@@ -1,11 +1,9 @@
 import * as fs from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
-import chalk from "chalk";
-import prettier from 'prettier';
-import { ObjectState, PATCH_DIR, Save, UP_DIR, GlobalLuaModel } from "../models";
+import chalk from 'chalk';
+import { ObjectState, Save, UP_DIR, GlobalLuaModel } from '../models/index.js';
 import {
-  fileExists,
   formatLuaPrettier,
   generateGUIDMap,
   getSafeNameS,
@@ -13,8 +11,9 @@ import {
   safeMakeDir,
   writeFile, 
   writeJsonFile
-} from "./tools";
-import { ObjectStateUnpacker } from './object-state-unpacker';
+} from './tools/index.js';
+import { ObjectStateUnpacker } from './object_state_unpacker.js';
+
 // TODO
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -119,11 +118,5 @@ export class Unpacker {
   saveObjectWithoutContained(objectState: ObjectState, fileName: string) {
     const obj: Omit<ObjectState, "ContainedObjects"> = objectState;
     writeJsonFile(fileName, obj);
-  }
-
-  createModConfig() {
-    if(!fileExists(PATCH_DIR + 'mod_config.json')) {
-      writeJsonFile(PATCH_DIR + 'mod_config.json', { name: "Sample_mod", filesToPatch: [] });
-    }
   }
 }

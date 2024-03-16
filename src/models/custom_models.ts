@@ -1,4 +1,4 @@
-import { ObjectState } from "./game-models";
+import { ObjectState } from "./game_models";
 
 export interface FriendlyObjectState extends ObjectState {
   friendlyName: string

@@ -1,2 +1,2 @@
-export * from './io-tools';
-export * from './name-tools';
+export * from './io-tools.js';
+export * from './name-tools.js';

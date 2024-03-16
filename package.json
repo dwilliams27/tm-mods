@@ -1,17 +1,17 @@
 {
   "name": "tm-mods",
-  "version": "2.0.3",
-  "description": "Attempting to make custom corps for Terraforming Mars",
+  "version": "2.0.4",
+  "description": "Tools for patching TTS TM",
   "main": "index.js",
   "type": "module",
   "engines": {
-    "node": "~=18.13.0"
+    "node": ">=18.13.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "unpack": "rm -rf build/ unpacked/ && mkdir unpacked && npm run build && node --es-module-specifier-resolution=node ./build/index.js --unpack",
-    "pack": "rm -rf build/ repacked/ && mkdir repacked && npm run build && node --es-module-specifier-resolution=node ./build/index.js --pack",
-    "createPatch": "node --es-module-specifier-resolution=node ./build/index.js --createPatch",
+    "unpack": "rm -rf unpacked/ && node ./build/index.js --unpack",
+    "pack": "rm -rf repacked/ && node ./build/index.js --pack",
+    "create-patch": "node ./build/index.js --create-patch",
     "build": "npx tsc",
     "start": "node ./build/index.js"
   },
@@ -20,7 +20,7 @@
     "url": "git+https://github.com/dwilliams27/tm-mods.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "dwilliams27",
   "license": "GNU GPLv3",
   "bugs": {
     "url": "https://github.com/dwilliams27/tm-mods/issues"

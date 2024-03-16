@@ -1,7 +1,5 @@
-import { GUIDMap } from "../models/custom-models";
-import { GUIDState, GUIDStateToWrite, ObjectState, PATCH_DIR } from "../models/game-models";
-import { formatLuaPrettier, safeMakeDir, writeFile, writeJsonFile } from "./tools/io-tools";
-import { generateObjectStateFolderName, generateUniqueGUID } from "./tools/name-tools";
+import { GUIDState, GUIDMap, GUIDStateToWrite, ObjectState } from "../models/index.js";
+import { generateObjectStateFolderName, generateUniqueGUID, formatLuaPrettier, safeMakeDir, writeFile, writeJsonFile } from "./tools/index.js";
 
 export class ObjectStateUnpacker {
   private _objectStates: ObjectState[] = [];

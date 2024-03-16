@@ -1,7 +1,14 @@
 import chalk from 'chalk';
 import path from 'path';
-import { ModConfig, ObjectState, PATCH_DIR, RP_DIR, Save, UP_DIR } from '../models';
-import { GlobalLuaModel } from '../models';
+import {
+  ModConfig,
+  ObjectState,
+  PATCH_DIR,
+  RP_DIR,
+  Save,
+  UP_DIR,
+  GlobalLuaModel
+} from '../models/index.js';
 import {
   getFileList,
   getFolderList,
@@ -14,25 +21,21 @@ import {
   setObjectStateByNickname,
   writeJsonFile,
   zipFiles 
-} from './tools';
+} from './tools/index.js';
 
 export class Repacker {
   private save: Save;
+  private modConfig: ModConfig;
 
   constructor(save: Save) {
     this.save = save;
+    this.modConfig = readJSONFile(`${PATCH_DIR}mod_config.json`);
+    this.save.SaveName = this.modConfig.name;
     safeMakeDir(RP_DIR);
   }
 
   // TODO: Patch + Unpacked merge not implemented for Corps; Just pulling from unpacked now
   repack() {
-    /* 
-      --------------------
-      - Mod Config File --
-      --------------------
-    */
-    const filesToPatch = this.parseModFile();
-
     /* 
       --------------------
       --- Corporations ---
@@ -45,19 +48,16 @@ export class Repacker {
       ---- Global Lua ----
       --------------------
     */
-    this.repackGlobalLua(filesToPatch);
+    this.repackGlobalLua(this.modConfig.filesToPatch);
 
-    // Repack save.json
+    /* 
+      --------------------
+      - Repack save.json -
+      --------------------
+    */
     console.log(chalk.cyan('Packing save file ') + chalk.yellow(path.resolve(RP_DIR + 'save_output.json')));
-    writeJsonFile(RP_DIR + 'save_output.json', this.save);
-    console.log(chalk.green('Repacking complete! Replace save in Tabletop Simulator/Mods/Workshop'));
-  }
-
-  parseModFile() {
-    const modConfig: ModConfig = readJSONFile(`${PATCH_DIR}mod_config.json`);
-    this.save.SaveName = modConfig.name;
-
-    return modConfig.filesToPatch;
+    writeJsonFile(`${RP_DIR}${this.modConfig.name}.json`, this.save);
+    console.log(chalk.green('Repacking complete! Replace save in ~/Library/Tabletop Simulator/Saves'));
   }
 
   repackCorporations(repackFromPatch: boolean) {
@@ -116,7 +116,7 @@ export class Repacker {
     modContents.push(PATCH_DIR + 'mod_config.json');
     modContents.push(PATCH_DIR + 'global/state.json');
 
-    const modConfig: ModConfig = readJSONFile(PATCH_DIR + 'mod_config.json');
+    this.modConfig = readJSONFile(PATCH_DIR + 'mod_config.json');
 
      
     // TODO: 'Patching file' printed too many times
@@ -138,7 +138,7 @@ export class Repacker {
     }
     console.log(chalk.cyan('Packing global lua script'));
     
-    this.createPortableModZip(modContents, modConfig.name);
+    this.createPortableModZip(modContents, this.modConfig.name);
 
     this.save.LuaScript = res;
   }

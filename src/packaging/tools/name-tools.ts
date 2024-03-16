@@ -1,5 +1,4 @@
-import { FriendlyObjectState, GUIDMap, GUIDNode } from "../../models/custom-models";
-import { GUIDState, ObjectState, Save } from "../../models/game-models";
+import { FriendlyObjectState, GUIDMap, GUIDNode, GUIDState, ObjectState, Save } from "../../models/index.js";
 
 export const MAX_FRIENDLY_NAME_LEN = 30;
 

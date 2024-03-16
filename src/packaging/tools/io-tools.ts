@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import fse from "fs-extra";
 import AdmZip from 'adm-zip';
-import { ObjectState, Save, UP_DIR } from "../../models";
+import { ObjectState, Save, SAVES_DIR, UP_DIR } from "../../models/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -54,11 +54,11 @@ export function getSafeNameS(str: string) {
 }
 
 export function readInSaveFile() {
-  const saveFile = getFileList(UP_DIR + '../saves/').filter((file) => !file.includes('.bak'))[0];
+  const saveFile = getFileList(SAVES_DIR).filter((file) => !file.includes('.bak'))[0];
   console.log(chalk.cyan('Reading in save file: ') + chalk.yellow(saveFile));
   let save: Save | null = null;
   try {
-    save = readJSONFile(UP_DIR + '../saves/' + saveFile);
+    save = readJSONFile(SAVES_DIR + saveFile);
   } catch (e) {
     console.error(e);
     return null;
@@ -97,9 +97,9 @@ export function fileExists(filePath: string) {
   return existsSync(filePath);
 }
 
-export function copyFolder(source: string, destination: string) {
+export function copyFolder(source: string, destination: string, overwrite: boolean = false) {
   try {
-    fse.copySync(source, destination, { overwrite: false })
+    fse.copySync(source, destination, { overwrite });
     return true;
   } catch (err) {
     console.error(err);
