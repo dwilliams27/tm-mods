@@ -1,7 +1,7 @@
-import { Unpacker } from "./packaging/unpacker.js";
+import { Unpacker } from "./packaging/unpacker";
 import 'source-map-support/register.js';
 import { Repacker } from "./packaging/repacker.js";
-import { copyFolder, readInSaveFile } from "./packaging/tools";
+import { copyFolder, readInSaveFile } from "./packaging/tools/index.js";
 import chalk from "chalk";
 import { PATCH_DIR, UP_DIR } from "./models";
 

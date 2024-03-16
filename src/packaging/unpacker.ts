@@ -60,6 +60,7 @@ export class Unpacker {
   }
 
   unpackGlobalLuaScript() {
+    safeMakeDir(`${UP_DIR}global/`);
     try {
       fs.writeFileSync(`${UP_DIR}global/global.lua`, this._save.LuaScript);
       fs.writeFileSync(`${UP_DIR}global/state.json`, this._save.LuaScriptState);
@@ -70,7 +71,6 @@ export class Unpacker {
   }
 
   chunkGlobalLuaScript() {
-    safeMakeDir(UP_DIR + 'global/');
     let sections: string[] = [];
     try {
       sections = readFileAsString(`${UP_DIR}global/global.lua`).split("\n\n\n");
