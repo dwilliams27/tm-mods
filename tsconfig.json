@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es2017",
+    "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
-    "esModuleInterop": true,                  
-    "lib": ["es6"],                     
+    "esModuleInterop": true,
     "allowJs": true,
-    "outDir": "build",                          
+    "outDir": "build",
     "rootDir": "src",
-    "strict": true,         
+    "strict": true,
     "noImplicitAny": true,
     "resolveJsonModule": true,
     "sourceMap": true
-  }
+  },
+  "include": ["src/**/*"]
 }

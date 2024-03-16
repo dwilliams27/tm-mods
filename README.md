@@ -7,7 +7,7 @@ Tools for adding onto Terraforming Mars Tabletop Simulator mod
 3. Unpack save with `npm run unpack` (will get first non '.bak.json` file it finds in save folder)
 4. Create Patch folder + mod config with `npm run createPatch`
 5. Make changes to the files
-6. Set name + filesToPatch in `patch/mod_config.json` (state.json automatically included)
+6. Set name + filesToPatch in `patch/mod_config.json`
 7. Repack save with `npm run pack` (will output new save file to `repacked/save_output.json`)
 8. Place this save file in `Tabletop Simulator/Saves`; this save should now appear in game to load, with the same name as in the mod_config
 
