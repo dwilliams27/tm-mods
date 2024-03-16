@@ -12,6 +12,8 @@
     "unpack": "rm -rf unpacked/ && node ./build/index.js --unpack",
     "pack": "rm -rf repacked/ && node ./build/index.js --pack",
     "create-patch": "node ./build/index.js --create-patch",
+    "init-mod": "node ./build/index.js --init-mod",
+    "sync-mod": "node ./build/index.js --sync-mod",
     "build": "npx tsc",
     "start": "node ./build/index.js"
   },

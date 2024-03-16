@@ -1,7 +1,7 @@
 import { Unpacker } from "./packaging/unpacker.js";
 import 'source-map-support/register.js';
 import { Repacker } from "./packaging/repacker.js";
-import { copyFolder, readInSaveFile } from "./packaging/tools/index.js";
+import { copyFolderOrFile, readInSaveFile } from "./packaging/tools/index.js";
 import chalk from "chalk";
 import { PATCH_DIR, UP_DIR } from "./models/index.js";
 import { ModManager } from "./packaging/mod_manager.js";
@@ -25,17 +25,22 @@ if(save !== null) {
         break;
       }
       case '--create-patch': {
-        copyFolder(UP_DIR, PATCH_DIR);
-        console.log(chalk.green('Success! Copied unpacked/ folder to patch/ folder, without overwriting any existing files in patch/'));
+        console.log(chalk.cyan('Creating patch/...'));
+        copyFolderOrFile(UP_DIR, PATCH_DIR);
+        console.log(chalk.green('Success! Copied unpacked/ folder to patch/ folder (without overwriting existing files)'));
         break;
       }
       case '--init-mod': {
         const modManager = new ModManager(save);
         modManager.createModConfig();
         console.log(chalk.green('Success! Created mod_config.json in mod/ folder. Add files to "filesToPatch" then run "npm run sync-mod" to fill mod/ with these files from patch/'));
+        break;
       }
       case '--sync-mod': {
-        
+        const modManager = new ModManager(save);
+        modManager.syncModFilesWithPatch();
+        console.log(chalk.green(`Success! Synced files from mod_config.json's "filesToPatch" to mod/ folder (without replacing existing files)`));
+        break;
       }
     }
   }

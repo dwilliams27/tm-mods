@@ -41,7 +41,7 @@ export function writeFile(filePath: string, content: any) {
 }
 
 export function writeJsonFile(filePath: string, content: any) {
-  const data = JSON.stringify(content);
+  const data = JSON.stringify(content, null, 2);
   writeFileSync(filePath, data);
 }
 
@@ -97,7 +97,7 @@ export function fileExists(filePath: string) {
   return existsSync(filePath);
 }
 
-export function copyFolder(source: string, destination: string, overwrite: boolean = false) {
+export function copyFolderOrFile(source: string, destination: string, overwrite: boolean = false) {
   try {
     fse.copySync(source, destination, { overwrite });
     return true;
