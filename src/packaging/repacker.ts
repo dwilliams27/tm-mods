@@ -38,7 +38,7 @@ export class Repacker {
       --- Corporations ---
       --------------------
     */
-    this.repackCorporations(false);
+    // this.repackCorporations(false);
 
     /* 
       --------------------
@@ -113,10 +113,10 @@ export class Repacker {
     }
 
     const modContents: string[] = [];
-    modContents.push(PATCH_DIR + '/mod_config.json');
-    modContents.push(PATCH_DIR + '/state.json');
+    modContents.push(PATCH_DIR + 'mod_config.json');
+    modContents.push(PATCH_DIR + 'global/state.json');
 
-    const modConfig: ModConfig = readJSONFile(PATCH_DIR + '/mod_config.json');
+    const modConfig: ModConfig = readJSONFile(PATCH_DIR + 'mod_config.json');
 
      
     // TODO: 'Patching file' printed too many times
@@ -145,6 +145,6 @@ export class Repacker {
 
   createPortableModZip(paths: string[], filename: string) {
     console.log(chalk.cyan('Created mod zip at ') + chalk.yellow(path.resolve(RP_DIR + filename) + '.zip'));
-    zipFiles(paths, RP_DIR + filename);
+    zipFiles(paths, path.resolve(RP_DIR + filename));
   }
 }
