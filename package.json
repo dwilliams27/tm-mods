@@ -1,6 +1,6 @@
 {
   "name": "tm-mods",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Tools for patching TTS TM",
   "main": "index.js",
   "type": "module",

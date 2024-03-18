@@ -17,28 +17,24 @@ if(save !== null) {
         console.log(chalk.cyan('Packing patch/ and unpacked/ folders...'));
         const repacker = new Repacker(save);
         repacker.repack();
+        console.log(chalk.green('Success! Mod repacked'));
         break;
       }
       case '--unpack': {
         const unpacker = new Unpacker(save);
         unpacker.unpack();
-        break;
-      }
-      case '--create-patch': {
-        console.log(chalk.cyan('Creating patch/...'));
-        copyFolderOrFile(UP_DIR, PATCH_DIR);
-        console.log(chalk.green('Success! Copied unpacked/ folder to patch/ folder (without overwriting existing files)'));
+        console.log(chalk.green('Success! Mod unpacked'));
         break;
       }
       case '--init-mod': {
         const modManager = new ModManager(save);
         modManager.createModConfig();
-        console.log(chalk.green('Success! Created mod_config.json in mod/ folder. Add files to "filesToPatch" then run "npm run sync-mod" to fill mod/ with these files from patch/'));
+        console.log(chalk.green('Success! Created mod_config.json in mod/ folder. Add files to "filesToPatch" then run "npm run sync-mod" to fill mod/ with these files from unpacked/'));
         break;
       }
       case '--sync-mod': {
         const modManager = new ModManager(save);
-        modManager.syncModFilesWithPatch();
+        modManager.syncModFiles();
         console.log(chalk.green(`Success! Synced files from mod_config.json's "filesToPatch" to mod/ folder (without replacing existing files)`));
         break;
       }

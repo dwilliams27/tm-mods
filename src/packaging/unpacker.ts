@@ -12,7 +12,7 @@ import {
   writeFile, 
   writeJsonFile
 } from './tools/index.js';
-import { ObjectStateUnpacker } from './object_state_unpacker.js';
+import { ObjectStateManager } from './object_state_manager.js';
 
 // TODO
 const __filename = fileURLToPath(import.meta.url);
@@ -53,7 +53,7 @@ export class Unpacker {
     console.log(chalk.cyan('--- Unrolling Object States ---'));
     const objectStateDir = UP_DIR + 'object-states/';
     safeMakeDir(objectStateDir);
-    const objectStateUnpacker = new ObjectStateUnpacker(this._save.ObjectStates, objectStateDir, guidMap);
+    const objectStateUnpacker = new ObjectStateManager(this._save, objectStateDir, guidMap);
     objectStateUnpacker.unpackAll();
     console.log(chalk.cyan('--- Done Unrolling Object States ---'));
   }
@@ -94,7 +94,6 @@ export class Unpacker {
       file['n' + k] = sections[k];
     }
 
-    // TODO: Off by 1
     let arr = []
     arr.push(sections[chunkBufferIndex]);
     

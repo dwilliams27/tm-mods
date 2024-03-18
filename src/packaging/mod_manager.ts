@@ -1,4 +1,4 @@
-import { MOD_DIR, ModConfig, PATCH_DIR, Save } from "../models/index.js";
+import { MOD_DIR, ModConfig, Save, UP_DIR } from "../models/index.js";
 import { copyFolderOrFile, fileExists, readJSONFile, safeMakeDir, writeJsonFile } from "./tools/index.js";
 
 export class ModManager {
@@ -16,11 +16,14 @@ export class ModManager {
     }
   }
 
-  syncModFilesWithPatch() {
-    this._modConfig = readJSONFile(PATCH_DIR + 'mod_config.json');
+  syncModFiles() {
+    this._modConfig = readJSONFile(MOD_DIR + 'mod_config.json');
     this._modConfig?.filesToPatch.forEach((file) => {
-      if(fileExists(PATCH_DIR + file)) {
-        copyFolderOrFile(PATCH_DIR + file, MOD_DIR + file);
+      if(fileExists(`${UP_DIR}${file}.json`)) {
+        copyFolderOrFile(`${UP_DIR}${file}.json`, `${MOD_DIR}${file}.json`);
+      }
+      if(fileExists(`${UP_DIR}${file}.lua`)) {
+        copyFolderOrFile(`${UP_DIR}${file}.lua`, `${MOD_DIR}${file}.lua`);
       }
     });
   }

@@ -1,9 +1,6 @@
 import chalk from 'chalk';
 import path from 'path';
 import {
-  ModConfig,
-  ObjectState,
-  PATCH_DIR,
   RP_DIR,
   Save,
   UP_DIR,
@@ -11,45 +8,37 @@ import {
   MOD_DIR
 } from '../models/index.js';
 import {
-  getFileList,
-  getFolderList,
-  getSafeName,
-  readFileAsString,
   readInFiles,
   readInFolder,
-  readJSONFile,
   safeMakeDir,
-  setObjectStateByNickname,
   writeJsonFile,
   zipFiles 
 } from './tools/index.js';
+import { ObjectStateManager } from './object_state_manager.js';
 
 export class Repacker {
-  private save: Save;
-  private modConfig: ModConfig;
+  private _objectStateManager: ObjectStateManager;
 
   constructor(save: Save) {
-    this.save = save;
-    this.modConfig = readJSONFile(`${MOD_DIR}mod_config.json`);
-    this.save.SaveName = this.modConfig.name;
+    this._objectStateManager = new ObjectStateManager(save, UP_DIR, {}); 
     safeMakeDir(RP_DIR);
   }
 
-  // TODO: Patch + Unpacked merge not implemented for Corps; Just pulling from unpacked now
   repack() {
     /* 
       --------------------
-      --- Corporations ---
+      -- Object  States --
       --------------------
     */
-    // this.repackCorporations(false);
+    this._objectStateManager.packAllObjectsStates();
 
     /* 
       --------------------
       ---- Global Lua ----
       --------------------
     */
-    this.repackGlobalLua(this.modConfig.filesToPatch);
+    console.log(chalk.cyan('Packing object states...'));
+    this.repackGlobalLua(this._objectStateManager._modConfig.filesToPatch);
 
     /* 
       --------------------
@@ -57,49 +46,8 @@ export class Repacker {
       --------------------
     */
     console.log(chalk.cyan('Packing save file ') + chalk.yellow(path.resolve(RP_DIR + 'save_output.json')));
-    writeJsonFile(`${RP_DIR}${this.modConfig.name}.json`, this.save);
+    writeJsonFile(`${RP_DIR}${this._objectStateManager._modConfig.name}.json`, this._objectStateManager._save);
     console.log(chalk.green('Repacking complete! Replace save in ~/Library/Tabletop Simulator/Saves'));
-  }
-
-  repackCorporations(repackFromPatch: boolean) {
-    // TODO: Packs back in wrong order
-    safeMakeDir(RP_DIR + '/corporations');
-    const sourceFolder = repackFromPatch ? PATCH_DIR : UP_DIR;
-    const folderPath = sourceFolder + '/corporations';
-    const folderList = getFolderList(folderPath);
-    const containedObjects: ObjectState[] = []; 
-  
-    for(let folder of folderList) {
-      const corpFiles = getFileList(folderPath + '/' + folder);
-      
-      if(corpFiles.length == 1) {
-        // No LUA script
-        const corpObj: ObjectState = readJSONFile(folderPath + '/' + folder + '/' + corpFiles[0]);
-        console.log(chalk.cyan('Adding corp ') + chalk.yellow(getSafeName(corpObj)));
-        containedObjects.push(corpObj);
-      } else {
-        // Has LUA script
-        const luaIndex = corpFiles[0].charAt(-1) === 'a' ? 0 : 1;
-        // Get non-lua file
-        const corpObj: ObjectState = readJSONFile(folderPath + '/' + folder + '/' + corpFiles[corpFiles.length - luaIndex - 1]);
-  
-        corpObj.LuaScript = readFileAsString(folderPath + '/' + folder + '/' + corpFiles[luaIndex]);
-  
-        console.log(chalk.cyan('Adding corp ') + chalk.yellow(getSafeName(corpObj)));
-        containedObjects.push(corpObj);
-      }
-    }
-    const corpDeckObjectState: ObjectState = readJSONFile(sourceFolder + '/corporations/corporations.json');
-    const deckFilePath = RP_DIR + 'corporations/' + getSafeName(corpDeckObjectState) + '.json';
-    // corpDeckObjectState.ContainedObjects = containedObjects.sort((a, b) => {
-    //   const aIndex = corpDeckObjectState.DeckIDs?.findIndex((value) => parseInt(a.CardID ?? '') === value);
-    //   const bIndex = corpDeckObjectState.DeckIDs?.findIndex((value) => parseInt(b.CardID ?? '') === value);
-    //   return aIndex < bIndex ? -1 : 1;
-    // });
-    console.log(chalk.cyan('Packing file ') + chalk.yellow(path.resolve(deckFilePath)));
-    writeJsonFile(deckFilePath, corpDeckObjectState);
-
-    setObjectStateByNickname(this.save, 'Corporations', corpDeckObjectState);
   }
 
   repackGlobalLua(filesToPatch: string[]) {
@@ -110,7 +58,7 @@ export class Repacker {
     const unpackedFolderPath = UP_DIR + 'global';
 
     // Read in mod files as [file_name, data]
-    const patchFiles = readInFiles(filesToPatch.map(((file) => MOD_DIR + file)));
+    const patchFiles = readInFiles(filesToPatch.filter((file) => !file.startsWith('object-states')).map(((file) => `${MOD_DIR}${file}.lua`)));
     const fileSet: { [key: string]: string} = {};
     for(const patchFile of patchFiles) {
       // Chop off path, only use file name for fileSet map
@@ -119,7 +67,6 @@ export class Repacker {
 
     const modContents: string[] = [];
     modContents.push(MOD_DIR + 'mod_config.json');
-    modContents.push(PATCH_DIR + 'global/state.json');
 
     for(const k in GlobalLuaModel) {
       const unpackedFiles = readInFolder(`${unpackedFolderPath}/${(GlobalLuaModel as any)[k]}`);
@@ -136,8 +83,8 @@ export class Repacker {
       }
     }
     
-    this.createPortableModZip(modContents, this.modConfig.name);
-    this.save.LuaScript = res;
+    this.createPortableModZip(modContents, this._objectStateManager._modConfig.name);
+    this._objectStateManager._save.LuaScript = res;
   }
 
   createPortableModZip(paths: string[], filename: string) {
