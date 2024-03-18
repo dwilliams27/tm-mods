@@ -1,5 +1,5 @@
 # tm-mods
-Tools for adding onto Terraforming Mars Tabletop Simulator mod
+Tools for adding onto Terraforming Mars Tabletop Simulator mod (Krymnopht's steam workshop version)
 
 ## Usage
 1. Install node modules with `npm i`
@@ -20,11 +20,24 @@ up by blocks of newlines, so I manually labelled approximately what each block w
 `global/` folder.
 The files in each of these folders are functions or large blocks of text within each of the larger chunks
 
-## Patch and Mod Config
+## Mod
 
-The patch directory is used to store your modified code to replace in the save file. Fill out the `mod_config.json` file
-with a list of paths (relative to `patch/`) of the specific files you want to replace.
+The `mod/` directory is used to store the files you want to patch the save with.
+Setup a new mod by running
+```
+npm run init-mod
+```
+Add name of mod and what files to patch in `mod/mod_config.json`
+Then run
+```
+npm run sync-mod
+```
+To have the files listed be copied from `unpacked/` -> `mod/` (without replacing existing files)
 
-## TODO
+## Repacking
 
-Corp patching not well supported the the moment
+After changing files in `mod/` and configuring `mod_config.json`, run
+```
+npm run pack
+```
+To generate a mod zip and playable save file.
