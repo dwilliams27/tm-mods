@@ -1,4 +1,4 @@
-import { FriendlyObjectState, GUIDMap, GUIDNode, GUIDState, ObjectState, Save } from "../../models/index.js";
+import { FriendlyObjectState, GUIDMap, GUIDNode, GUIDState, ObjectState, Save } from "../models/index.js";
 
 export const MAX_FRIENDLY_NAME_LEN = 30;
 
@@ -10,13 +10,6 @@ export function generateObjectStateFolderName(state: GUIDState) {
     name = name.substring(0, MAX_FRIENDLY_NAME_LEN);
   }
   return name;
-}
-
-// TODO: How to preserve order for repacking?
-export function generateFriendlyNameMap(states: ObjectState): FriendlyObjectState[] {
-  const existingNames = {};
-
-  return [];
 }
 
 export function generateGUIDMap(save: Save) {
@@ -58,7 +51,7 @@ function generateGUIDMapHelper(state: ObjectState, map: GUIDMap, node: GUIDNode)
   return node;
 }
 
-// TODO: Kinda hackey, since a few edge cases with GUIDs not being unique
+// TODO: Kinda hackey
 export function generateUniqueGUID(state: ObjectState) {
   return state.GUID + (state.Description ? '%' + (state.Description.length > 5 ? state.Description.substring(0,5) : state.Description) : '');
 }

@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import fse from "fs-extra";
 import AdmZip from 'adm-zip';
-import { ObjectState, Save, SAVES_DIR, UP_DIR } from "../../models/index.js";
+import { ObjectState, Save, SAVES_DIR, UP_DIR } from "../models/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

@@ -9,10 +9,10 @@ import {
   getSafeNameS,
   readFileAsString,
   safeMakeDir,
-  writeFile, 
-  writeJsonFile
-} from './tools/index.js';
-import { ObjectStateManager } from './object_state_manager.js';
+  writeFile,
+  writeJsonFile,
+} from '../utils/index.js';
+import { ObjectStateManager } from './object-state-manager.js';
 
 // TODO
 const __filename = fileURLToPath(import.meta.url);

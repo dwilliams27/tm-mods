@@ -13,8 +13,8 @@ import {
   safeMakeDir,
   writeJsonFile,
   zipFiles 
-} from './tools/index.js';
-import { ObjectStateManager } from './object_state_manager.js';
+} from '../utils/index.js';
+import { ObjectStateManager } from './object-state-manager.js';
 
 export class Repacker {
   private _objectStateManager: ObjectStateManager;
@@ -53,7 +53,6 @@ export class Repacker {
   repackGlobalLua(filesToPatch: string[]) {
     console.log(chalk.cyan('Packing global lua script'));
 
-    safeMakeDir(RP_DIR + 'global');
     let res = '';
     const unpackedFolderPath = UP_DIR + 'global';
 

@@ -14,6 +14,7 @@
     "create-patch": "node ./build/index.js --create-patch",
     "init-mod": "node ./build/index.js --init-mod",
     "sync-mod": "node ./build/index.js --sync-mod",
+    "generate-types": "node ./build/index.js --ai-gen-types",
     "build": "npx tsc",
     "start": "node ./build/index.js"
   },
@@ -30,17 +31,20 @@
   "homepage": "https://github.com/dwilliams27/tm-mods#readme",
   "devDependencies": {
     "@prettier/plugin-lua": "^0.0.2",
+    "@types/adm-zip": "^0.5.0",
     "@types/fs-extra": "^11.0.1",
+    "@types/luaparse": "^0.2.12",
     "@types/node": "^18.15.11",
     "@types/prettier": "^2.7.3",
-    "@types/adm-zip": "^0.5.0",
-    "prettier": "^2.8.8",
     "typescript": "^5.0.4"
   },
   "dependencies": {
     "adm-zip": "^0.5.10",
     "chalk": "^5.2.0",
     "fs-extra": "^11.1.1",
+    "luaparse": "^0.3.1",
+    "openai": "^4.29.2",
+    "prettier": "^2.8.8",
     "source-map-support": "^0.5.21"
   }
 }

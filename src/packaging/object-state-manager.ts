@@ -1,5 +1,15 @@
-import { GUIDState, GUIDMap, GUIDStateToWrite, ObjectState, Save, ModConfig, MOD_DIR } from "../models/index.js";
-import { generateObjectStateFolderName, generateUniqueGUID, formatLuaPrettier, safeMakeDir, writeFile, writeJsonFile, readJSONFile, fileExists, readFileAsString } from "./tools/index.js";
+import { GUIDState, GUIDMap, ObjectState, Save, ModConfig, MOD_DIR } from "../models/index.js";
+import {
+  generateObjectStateFolderName,
+  formatLuaPrettier,
+  safeMakeDir,
+  writeFile,
+  writeJsonFile,
+  readJSONFile,
+  fileExists,
+  readFileAsString
+} from "../utils/index.js";
+import chalk from "chalk";
 
 export class ObjectStateManager {
   _save: Save;
@@ -89,7 +99,12 @@ export class ObjectStateManager {
    */
   public writeGUID(state: GUIDState, path: string) {
     const folderName = generateObjectStateFolderName(state);
-    const readableName = generateObjectStateFolderName(state) + '_' + (state.GUID in this._map ? state.GUID : generateUniqueGUID(state));
+    const readableName =
+      generateObjectStateFolderName(state) +
+      '_' +
+      (state.GUID in this._map
+        ? state.GUID
+        : (() => { console.log(chalk.white(`Duplicate GUID found: ${state.GUID}`)); return state.GUID })());
     const workingFolder = path + folderName + '/';
     safeMakeDir(workingFolder);
     if(state.LuaScript) writeFile(workingFolder + readableName + '.lua', formatLuaPrettier(state.LuaScript));
@@ -100,7 +115,6 @@ export class ObjectStateManager {
         const stateToWrite: GUIDState = obj;
         // TODO: Revisit need for metadata fields
         stateToWrite._index = index;
-        stateToWrite._uguid = generateUniqueGUID(obj);
         stateToWrite._uid = generateObjectStateFolderName(obj);
         this.writeGUID(stateToWrite, workingFolder);
       });

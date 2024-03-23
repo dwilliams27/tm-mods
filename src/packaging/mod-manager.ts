@@ -1,12 +1,16 @@
 import { MOD_DIR, ModConfig, Save, UP_DIR } from "../models/index.js";
-import { copyFolderOrFile, fileExists, readJSONFile, safeMakeDir, writeJsonFile } from "./tools/index.js";
+import {
+  copyFolderOrFile,
+  fileExists,
+  readJSONFile,
+  safeMakeDir,
+  writeJsonFile,
+} from "../utils/index.js";
 
 export class ModManager {
-  private _save: Save;
   private _modConfig?: ModConfig | null = null;
 
-  constructor(save: Save) {
-    this._save = save;
+  constructor() {
     safeMakeDir(MOD_DIR);
   }
 
